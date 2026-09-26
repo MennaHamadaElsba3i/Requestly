@@ -1,10 +1,10 @@
-# 🚀 Requestly
+# Requestly
 
 > A modern React dashboard for managing operational requests with URL-persistent filters, optimistic updates, resilient API handling, and a clean enterprise-style interface.
 
 ---
 
-## ✨ Overview
+## Overview
 
 Requestly is a React-based request management dashboard designed to handle common frontend engineering challenges such as slow or unreliable APIs, optimistic updates, URL-persistent state, background refetching, and unsaved form changes.
 
@@ -12,7 +12,7 @@ The focus is not only on the UI, but also on predictable data flow, reliable API
 
 ---
 
-## 🎯 Task Requirements
+## Task Requirements
 
 The dashboard supports:
 
@@ -37,9 +37,9 @@ The dashboard supports:
 
 ---
 
-## 🌟 Additional Features
+## Additional Features
 
-### 📊 Requests by Status
+### Requests by Status
 
 A compact status analysis section provides a quick overview of:
 
@@ -52,7 +52,7 @@ A compact status analysis section provides a quick overview of:
 
 Status cards can also be clicked to filter the requests list.
 
-### 🕒 Activity & Change History
+### Activity & Change History
 
 The request details page includes an activity history showing important changes such as:
 
@@ -64,7 +64,7 @@ The request details page includes an activity history showing important changes 
 
 ---
 
-## 🖥️ Main Screens
+## Main Screens
 
 ### Requests Dashboard
 
@@ -95,7 +95,7 @@ Each request has a dedicated details page containing:
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Technology | Purpose |
 |---|---|
@@ -108,11 +108,10 @@ Each request has a dedicated details page containing:
 | Zod | Runtime API response validation |
 | Tailwind CSS | Styling |
 | Framer Motion | Subtle UI animations |
-| Vitest / Testing Library | Testing |
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a feature-based architecture.
 
