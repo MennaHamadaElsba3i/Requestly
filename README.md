@@ -1,267 +1,270 @@
-# Requestly - React Request Management Dashboard
+# 🚀 Requestly
 
-An enterprise-grade React dashboard for managing infrastructure, operational, and development requests. Built with strict feature-based architecture, deterministic state boundaries, URL-persistent navigation, optimistic updates with rollbacks, race-condition prevention, and unsaved changes protection.
-
----
-
-## 1. Project Overview
-
-**Requestly** provides a centralized system for tracking, reviewing, prioritizing, and managing requests. Key capabilities include:
-
-* **Requests Table**: Interactive, accessible table displaying Request Title, Status, Priority, Assigned Owner, Created At, Updated At, and Quick Actions.
-* **URL-Driven List State**: Search queries, status filters, priority filters, owner filters, sorting parameters, and page numbers are all synchronized directly with the URL. Refreshing or sharing the URL restores the exact dataset state.
-* **Debounced Search**: Search input debounces keystrokes to minimize redundant network activity.
-* **Optimistic Status Updates**: Status can be changed directly from table rows with immediate UI reflection. If the server mutation fails, the status automatically rolls back and an error toast is displayed.
-* **Unsaved Changes Protection**: React Router navigation blockers (`useBlocker`) and window `beforeunload` events intercept dirty form navigation, preventing accidental data loss.
-* **Request Details & Editable Form**: Dedicated route `/requests/:requestId` featuring local draft state, client validation, owner reassignment, and explicit save actions.
-* **Activity & Change History**: Isolated query tracking events (`REQUEST_CREATED`, `STATUS_CHANGED`, `TITLE_CHANGED`, `PRIORITY_CHANGED`, `OWNER_CHANGED`) with its own loading and error states.
-* **Requests by Status Chart**: Compact bar chart displaying category counts (Pending, In Progress, Completed, Cancelled) computed from real data.
-* **Background Auto-Refresh**: Periodic background synchronization (30-second interval) with pause/resume controls that never disrupts active pagination, search terms, or form drafts.
+> A modern React dashboard for managing operational requests with URL-persistent filters, optimistic updates, resilient API handling, and a clean enterprise-style interface.
 
 ---
 
-## 2. Tech Stack
+## ✨ Overview
 
-| Technology | Role | Justification |
-| :--- | :--- | :--- |
-| **React 19** | Core UI | Declarative component model and concurrent rendering features. |
-| **TypeScript** | Type Safety | Strict compile-time contracts, domain models, and refactoring safety. |
-| **React Router v7** | Routing & URL State | First-class URL routing, search params sync, and `useBlocker` navigation interception. |
-| **TanStack Query v5** | Server State | Declarative data fetching, cache invalidation, optimistic updates, query cancellation, and background refetching. |
-| **Redux Toolkit** | Global Client State | Manages true global client state (toasts, global modals, auto-refresh preferences) without duplicating server cache. |
-| **Axios** | HTTP Client | Configured instance with interceptors, timeout handling, and `AbortSignal` network cancellation. |
-| **MSW (Mock Service Worker)** | Mock Backend | Network-level interception with simulated network latency, out-of-order responses, and failure injection. |
-| **Zod** | Runtime Validation | Schema validation of API payloads, pagination contracts, and form inputs. |
-| **Vitest & React Testing Library** | Automated Testing | High-speed unit and integration testing focused on user interactions and state transitions. |
-| **Vanilla CSS** | Styling System | Custom SaaS design system with CSS custom properties, responsive layout, accessible contrasts, and zero runtime overhead. |
+Requestly is a React-based request management dashboard designed to handle common frontend engineering challenges such as slow or unreliable APIs, optimistic updates, URL-persistent state, background refetching, and unsaved form changes.
+
+The focus is not only on the UI, but also on predictable data flow, reliable API handling, and a smooth user experience.
 
 ---
 
-## 3. Project Architecture
+## 🎯 Task Requirements
 
-The codebase strictly adheres to feature-based organization, isolating domain concerns and enforcing clear separation of responsibilities:
+The dashboard supports:
+
+- 🔎 Search requests by title
+- 🎛️ Filter by status, priority, and owner
+- ↕️ Sort requests
+- 📄 Pagination
+- 🔗 Persist search, filters, sorting, and pagination in the URL
+- 👀 View request details
+- ✏️ Edit request information
+- 🔄 Change request status and owner
+- ⚡ Optimistic status updates
+- ↩️ Automatic rollback when an update fails
+- 💾 Handle unsaved changes before leaving a request
+- 🔁 Automatic background data refresh
+- ⏳ Loading states
+- ❌ Error states
+- 📭 Empty states
+- 🐌 Simulated API latency
+- 💥 Simulated API failures
+- 🧪 Tests for important behaviors
+
+---
+
+## 🌟 Additional Features
+
+### 📊 Requests by Status
+
+A compact status analysis section provides a quick overview of:
+
+- Pending requests
+- In Progress requests
+- Completed requests
+- Cancelled requests
+- Total request count
+- Percentage distribution
+
+Status cards can also be clicked to filter the requests list.
+
+### 🕒 Activity & Change History
+
+The request details page includes an activity history showing important changes such as:
+
+- Request creation
+- Status changes
+- Priority changes
+- Owner changes
+- Title changes
+
+---
+
+## 🖥️ Main Screens
+
+### Requests Dashboard
+
+The main dashboard includes:
+
+- Status overview
+- Search
+- Filters
+- Sorting
+- Requests table
+- Inline status updates
+- Pagination
+- Loading, error, and empty states
+
+### Request Details
+
+Each request has a dedicated details page containing:
+
+- Request information
+- Status
+- Priority
+- Owner
+- Created date
+- Updated date
+- Editable request form
+- Activity history
+- Unsaved changes protection
+
+---
+
+## 🧰 Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| React | UI development |
+| React Router | Routing and URL state |
+| TanStack Query | Server state, caching, mutations, and refetching |
+| Redux Toolkit | Global client/UI state |
+| Axios | API communication |
+| MSW | Local mock API |
+| Zod | Runtime API response validation |
+| Tailwind CSS | Styling |
+| Framer Motion | Subtle UI animations |
+| Vitest / Testing Library | Testing |
+
+---
+
+## 🏗️ Architecture
+
+The project follows a feature-based architecture.
 
 ```text
 src/
 ├── app/
-│   ├── App.tsx                     # Root application wrapper
-│   ├── router.tsx                  # React Router Data Router with layout routes
-│   ├── providers.tsx               # TanStack Query, Redux, and Toast providers
+│   ├── router.jsx
+│   ├── providers.jsx
 │   └── store/
-│       ├── index.ts                # Redux store configuration and typed hooks
-│       └── slices/
-│           └── uiSlice.ts          # Global client UI state (toasts, modals, preferences)
 │
 ├── features/
 │   └── requests/
 │       ├── api/
-│       │   ├── requests.api.ts     # Axios API requests with Zod response parsing
-│       │   └── requests.keys.ts    # Centralized TanStack Query keys factory
-│       │
 │       ├── components/
-│       │   ├── RequestTable.tsx    # Accessible table with sortable headers
-│       │   ├── RequestRow.tsx      # Memoized row with optimistic inline status select
-│       │   ├── RequestFilters.tsx  # Filter controls (Status, Priority, Owner)
-│       │   ├── RequestSearch.tsx   # Debounced search input
-│       │   ├── RequestSort.tsx     # Sort field and order toggle
-│       │   ├── RequestPagination.tsx# Accessible pagination controls
-│       │   ├── RequestStatusSelect.tsx# Inline status dropdown with spinner
-│       │   ├── RequestForm.tsx     # Editable request form with dirty state detection
-│       │   ├── RequestActivity.tsx # Chronological activity timeline
-│       │   └── UnsavedChangesDialog.tsx# Confirmation dialog for dirty form navigation
-│       │
 │       ├── hooks/
-│       │   ├── useRequests.ts      # List query, pagination, and background refetch
-│       │   ├── useRequest.ts       # Single request detail & activity query
-│       │   ├── useUpdateRequest.ts # Mutation hook with optimistic updates & rollback
-│       │   └── useRequestSearchParams.ts # URL search params synchronization
-│       │
 │       ├── pages/
-│       │   ├── RequestsPage.tsx    # List page orchestrator
-│       │   └── RequestDetailsPage.tsx# Details & edit page orchestrator
-│       │
 │       ├── schemas/
-│       │   └── request.schema.ts   # Zod runtime validation schemas
-│       │
-│       ├── types/
-│       │   └── request.types.ts    # Domain TypeScript types
-│       │
 │       └── utils/
-│           └── request.utils.ts    # Pure date formatting and activity helper functions
 │
 ├── components/
 │   ├── ui/
-│   │   ├── Badge.tsx               # Semantic status and priority badges
-│   │   ├── Button.tsx              # Reusable button with loading and icon states
-│   │   ├── Header.tsx              # Top navigation bar with sync indicator
-│   │   ├── RequestsStatusChart.tsx # Compact bar chart for status counts
-│   │   └── ToastContainer.tsx      # Redux-driven transient notifications
 │   └── feedback/
-│       ├── LoadingState.tsx        # Skeleton loaders for table, details, activity
-│       ├── ErrorState.tsx          # Error alert cards with retry handlers
-│       └── EmptyState.tsx          # Empty dataset and empty filter results views
 │
 ├── lib/
-│   └── axios.ts                    # Configured Axios instance with error formatting
+│   └── axios.js
 │
 ├── mocks/
 │   ├── data/
-│   │   ├── requests.ts             # Initial mock requests and owners dataset
-│   │   └── activity.ts             # Initial mock change history logs
 │   ├── handlers/
-│   │   └── requests.handlers.ts    # MSW HTTP route handlers (latency, sorting, errors)
-│   ├── server.ts                   # MSW Node server for Vitest
-│   └── browser.ts                  # MSW Service Worker for browser development
+│   ├── browser.js
+│   └── server.js
 │
-├── tests/
-│   ├── setup.ts                    # Vitest setup with MSW listeners and cleanup
-│   ├── utils.tsx                   # Test render utilities (QueryClient, Store, MemoryRouter)
-│   └── requests.test.tsx           # Comprehensive integration tests
-│
-└── main.tsx                        # Application entry point initializing MSW
-```
+└── tests/
 
----
+Folder Responsibilities
+app/ → Routing, providers, and global store
+features/requests/ → Request-related pages, components, hooks, API, schemas, and utilities
+components/ → Reusable UI and feedback components
+lib/ → Shared infrastructure such as Axios
+mocks/ → Mock API handlers and data
+tests/ → Test setup and reusable testing utilities
 
-## 4. State Management Architecture
+State Management
 
-A key principle of this application is **zero state duplication**. State is partitioned by its true source of truth:
+Different types of state are handled by the appropriate tool:
 
-```text
-┌────────────────────────────────────────────────────────┐
-│                   State Boundaries                     │
-├───────────────────┬────────────────────────────────────┤
-│ Server State      │ TanStack Query (fetching, caching, │
-│                   │ optimistic updates, rollbacks)     │
-├───────────────────┼────────────────────────────────────┤
-│ URL State         │ React Router (search, filter, sort,│
-│                   │ page, active request ID)           │
-├───────────────────┼────────────────────────────────────┤
-│ Global UI State   │ Redux Toolkit (toasts, global      │
-│                   │ modals, auto-refresh preferences)  │
-├───────────────────┼────────────────────────────────────┤
-│ Form / Local State│ React useState (draft form values, │
-│                   │ transient input keystrokes)        │
-└───────────────────┴────────────────────────────────────┘
-```
+State	Solution
+API / Server data	TanStack Query
+Search & filters	URL Search Params
+Sorting & pagination	URL Search Params
+Global UI state	Redux Toolkit
+Form state	Local component state
+Server cache	TanStack Query
 
----
+Data Flow
+User Interaction
+       ↓
+React Components
+       ↓
+Feature Hooks
+       ↓
+TanStack Query
+       ↓
+Axios
+       ↓
+MSW Mock API
+       ↓
+Mock Data
 
-## 5. Important Engineering Decisions
+For optimistic updates:
 
-### 1. Why React Query Owns Server State (Not Redux)
-Server data is inherently asynchronous, cached, and owned by the server. Storing server entities in Redux leads to stale cache bugs, duplicate synchronization logic, manual status flags (`isLoading`, `isError`), and manual refetch interval timers. TanStack Query automatically manages caching, garbage collection, window refocus synchronization, and network deduplication.
+User Action
+     ↓
+Optimistic UI Update
+     ↓
+API Request
+     ↓
+Success → Keep Updated State
+     ↓
+Failure → Roll Back Previous State
 
-### 2. Why URL Owns Search, Filter, Sort, and Page
-List navigation parameters belong in the URL search parameters (`?search=login&status=Pending&page=2`). This guarantees:
-- Users can bookmark specific search and filter views.
-- URLs can be shared with teammates and will render the identical dataset.
-- Browser forward and backward navigation functions as expected.
-- No redundant global synchronization logic is required.
+🧪 Mock API
 
-### 3. How Optimistic Updates and Rollback Work
-When a status change is triggered from the table:
-1. `useUpdateRequest.onMutate` cancels ongoing queries for `['requests']` and `['request', id]`.
-2. It takes a snapshot of the previous cache state.
-3. It immediately updates the cache with the new status, instantly refreshing the badge in the UI.
-4. If the mutation fails on the server:
-   - `onError` restores the previous cache snapshot.
-   - It dispatches an error toast: *"Failed to update status. Changes were rolled back to the previous state."*
-5. If the mutation succeeds:
-   - `onSuccess` updates the cache with the server-confirmed timestamp and invalidates activity history.
+The project includes a local mock API using MSW.
 
-### 4. How Race Conditions Are Prevented
-Race conditions (e.g. out-of-order network responses during rapid typing or filter changes) are mitigated at two levels:
-1. **Network Abort Cancellation**: `useRequests` passes the TanStack Query `signal` directly into Axios (`apiClient.get('/requests', { signal })`). When query parameters change, any pending HTTP request is aborted immediately.
-2. **Deterministic Query Keys**: Every unique combination of search, status, priority, owner, sortBy, sortOrder, and page maps to a distinct query key. Responses can never overwrite a different query parameter state.
+It simulates:
 
-### 5. How Unsaved Changes Protection Works
-When editing a request in `RequestForm`, the component tracks differences between draft values and initial server values:
-1. If `isDirty` is true, React Router's `useBlocker` intercepts navigation attempts.
-2. An accessible confirmation modal (`UnsavedChangesDialog`) opens:
-   - *"Stay & Continue Editing"*: Calls `blocker.reset()`, keeping the user on the form with drafts intact.
-   - *"Discard Changes & Leave"*: Calls `blocker.proceed()`, discarding drafts and executing navigation.
-3. A `beforeunload` event listener prevents accidental tab closure or browser refresh.
+API latency
+API failures
+Request fetching
+Request updates
+Request activity history
+Owner data
 
-### 6. Why Activity History Is Separated from Request Data
-Activity history is an append-only audit trail queried via `GET /requests/:id/activity`. Separating it ensures:
-- The details page can render immediately without waiting for large audit logs.
-- If activity retrieval fails, request details and editing remain fully functional.
-- Failed optimistic status mutations never create fake activity records; audit events are recorded only upon server confirmation.
+This makes it possible to test frontend behavior without requiring a real backend.
 
-### 7. Selective Memoization
-Components like `RequestRow` are wrapped in `React.memo` with a comparator. When one row undergoes an optimistic update or hover interaction, other rows in the table do not re-render.
+🧩 Key Technical Decisions
+TanStack Query
 
----
+Used for server state, caching, loading states, mutations, and background refetching.
 
-## 6. Getting Started
+URL Search Params
 
-### Prerequisites
-* **Node.js**: v18.0.0 or higher
-* **npm**: v9.0.0 or higher
+Used for search, filters, sorting, and pagination so the current list state survives refresh and can be shared through the URL.
 
-### Installation
-Clone the repository and install dependencies:
-```bash
+Redux Toolkit
+
+Used for global client-side UI state instead of duplicating server state already handled by TanStack Query.
+
+MSW
+
+Used to simulate API behavior locally, including slow and failed requests.
+
+Zod
+
+Used to validate API responses at runtime and detect unexpected response shapes.
+
+🧪 Testing
+
+Tests focus on important user-facing behaviors such as:
+
+Loading and error states
+Request list behavior
+Filtering and searching
+Optimistic updates
+Rollback after failed updates
+Unsaved changes handling
+🚀 Getting Started
+1. Clone the repository
+git clone <repository-url>
+cd Requestly
+2. Install dependencies
 npm install
-```
-
-### Running Locally
-Start the development server with Vite:
-```bash
+3. Start the development server
 npm run dev
-```
 
-Open your browser at:
-```text
-http://127.0.0.1:5173
-```
-*MSW (Mock Service Worker) initializes automatically in the browser.*
+The application will be available at:
 
----
+http://localhost:5173
+📝 Implementation Note
 
-## 7. Testing
+The original task specified TypeScript.
 
-The project includes an automated test suite using **Vitest** and **React Testing Library**.
+The final implementation uses JavaScript/JSX while keeping the same feature-based architecture, runtime validation, API handling, and state-management approach.
 
-Run all tests:
-```bash
-npm run test
-```
+🎯 Project Goals
 
-Run tests in watch mode:
-```bash
-npm run test:watch
-```
+The project focuses on building a dashboard that is:
 
-Run TypeScript verification and production build:
-```bash
-npm run build
-```
-
----
-
-## 8. Verification Checklist
-
-* [x] React + TypeScript + Vite
-* [x] React Router Data Router with `useBlocker` support
-* [x] TanStack Query for server state management
-* [x] Redux Toolkit for global UI state (toasts, preferences)
-* [x] Axios API layer with AbortSignal cancellation
-* [x] MSW mock backend with simulated delay and error injection
-* [x] Zod runtime schemas for requests, responses, and forms
-* [x] Request Table with sortable columns and action links
-* [x] Debounced search query reflected in URL
-* [x] Multi-criteria filtering (Status, Priority, Owner) reflected in URL
-* [x] Multi-field sorting reflected in URL
-* [x] Full pagination reflected in URL
-* [x] Request details route `/requests/:requestId`
-* [x] Editable request form with draft state
-* [x] Optimistic status updates with automatic cache rollback on failure
-* [x] Unsaved changes protection (React Router blocker & beforeunload)
-* [x] Request Activity & Change History timeline
-* [x] Requests by Status compact bar chart
-* [x] Periodic background auto-refresh (30s)
-* [x] Complete loading skeletons, error states with retry, and empty states
-* [x] Race condition protection with network cancellation
-* [x] Full Vitest test suite passing with 100% success rate
+Reliable with slow or failing APIs
+Predictable in its data flow
+Responsive during updates
+Persistent through URL state
+Easy to maintain and extend
+Comfortable and simple to use
