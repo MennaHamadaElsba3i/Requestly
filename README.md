@@ -16,24 +16,24 @@ The focus is not only on the UI, but also on predictable data flow, reliable API
 
 The dashboard supports:
 
-- 🔎 Search requests by title
-- 🎛️ Filter by status, priority, and owner
-- ↕️ Sort requests
-- 📄 Pagination
-- 🔗 Persist search, filters, sorting, and pagination in the URL
-- 👀 View request details
-- ✏️ Edit request information
-- 🔄 Change request status and owner
-- ⚡ Optimistic status updates
-- ↩️ Automatic rollback when an update fails
-- 💾 Handle unsaved changes before leaving a request
-- 🔁 Automatic background data refresh
-- ⏳ Loading states
-- ❌ Error states
-- 📭 Empty states
-- 🐌 Simulated API latency
-- 💥 Simulated API failures
-- 🧪 Tests for important behaviors
+-  Search requests by title
+-  Filter by status, priority, and owner
+-  Sort requests
+-  Pagination
+-  Persist search, filters, sorting, and pagination in the URL
+-  View request details
+-  Edit request information
+-  Change request status and owner
+-  Optimistic status updates
+-  Automatic rollback when an update fails
+-  Handle unsaved changes before leaving a request
+-  Automatic background data refresh
+-  Loading states
+-  Error states
+-  Empty states
+-  Simulated API latency
+-  Simulated API failures
+-  Tests for important behaviors
 
 ---
 
