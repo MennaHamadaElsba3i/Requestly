@@ -230,15 +230,14 @@ Zod
 Used to validate API responses at runtime and detect unexpected response shapes.
 
 🧪 Testing
-
 Tests focus on important user-facing behaviors such as:
-
 Loading and error states
 Request list behavior
 Filtering and searching
 Optimistic updates
 Rollback after failed updates
 Unsaved changes handling
+
 🚀 Getting Started
 1. Clone the repository
 git clone <repository-url>
@@ -247,6 +246,8 @@ cd Requestly
 npm install
 3. Start the development server
 npm run dev
+
+
 
 The application will be available at:
 
@@ -257,10 +258,10 @@ The original task specified TypeScript.
 
 The final implementation uses JavaScript/JSX while keeping the same feature-based architecture, runtime validation, API handling, and state-management approach.
 
+
 🎯 Project Goals
 
 The project focuses on building a dashboard that is:
-
 Reliable with slow or failing APIs
 Predictable in its data flow
 Responsive during updates
